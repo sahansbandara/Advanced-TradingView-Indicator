@@ -1403,15 +1403,15 @@ ls_get_counts(condition, top, btm)=>
         count := 0
         vol := 0.
     else
-    if use_ls
-        if ls_intraPrecision
-            if ls_n > ls_length
-                if array.size(ls_v[ls_length]) > 0
-                    for [index, element] in ls_v[ls_length]
-                        vol += array.get(ls_l[ls_length], index) < top and array.get(ls_h[ls_length], index) > btm ? element : 0
-        else
-            vol += low[ls_length] < top and high[ls_length] > btm ? volume[ls_length] : 0
-        count += low[ls_length] < top and high[ls_length] > btm ? 1 : 0
+        if use_ls
+            if ls_intraPrecision
+                if ls_n > ls_length
+                    if array.size(ls_v[ls_length]) > 0
+                        for [index, element] in ls_v[ls_length]
+                            vol += array.get(ls_l[ls_length], index) < top and array.get(ls_h[ls_length], index) > btm ? element : 0
+            else
+                vol += low[ls_length] < top and high[ls_length] > btm ? volume[ls_length] : 0
+            count += low[ls_length] < top and high[ls_length] > btm ? 1 : 0
     [count, vol]
 
 ls_set_label(count, vol, x, y, css, lbl_style)=>
