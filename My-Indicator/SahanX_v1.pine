@@ -1402,16 +1402,15 @@ ls_get_counts(condition, top, btm)=>
     if condition
         count := 0
         vol := 0.
-    else
-        if use_ls
-            if ls_intraPrecision
-                if ls_n > ls_length
-                    if array.size(ls_v[ls_length]) > 0
-                        for [index, element] in ls_v[ls_length]
-                            vol += array.get(ls_l[ls_length], index) < top and array.get(ls_h[ls_length], index) > btm ? element : 0
-            else
-                vol += low[ls_length] < top and high[ls_length] > btm ? volume[ls_length] : 0
-            count += low[ls_length] < top and high[ls_length] > btm ? 1 : 0
+    else if use_ls
+        if ls_intraPrecision
+            if ls_n > ls_length
+                if array.size(ls_v[ls_length]) > 0
+                    for [index, element] in ls_v[ls_length]
+                        vol += array.get(ls_l[ls_length], index) < top and array.get(ls_h[ls_length], index) > btm ? element : 0
+        else
+            vol += low[ls_length] < top and high[ls_length] > btm ? volume[ls_length] : 0
+        count += low[ls_length] < top and high[ls_length] > btm ? 1 : 0
     [count, vol]
 
 ls_set_label(count, vol, x, y, css, lbl_style)=>
@@ -1595,8 +1594,8 @@ if use_obd
     obd_bull_ob := obd_bull_ob_val
     obd_bear_ob := obd_bear_ob_val
             
-    plot(obd_bull_ob ? 1 : na, 'Bull OB', obd_bull_css, 2, plot.style_linebr, offset = -obd_length, display = display.none)
-    plot(obd_bear_ob ? 1 : na, 'Bear OB', obd_bear_css, 2, plot.style_linebr, offset = -obd_length, display = display.none)
+plot(obd_bull_ob ? 1 : na, 'Bull OB', obd_bull_css, 2, plot.style_linebr, offset = -obd_length, display = display.none)
+plot(obd_bear_ob ? 1 : na, 'Bear OB', obd_bear_css, 2, plot.style_linebr, offset = -obd_length, display = display.none)
 
 //-----------------------------------------------------------------------------
 // DIVERGENCE LOGIC (Upgraded to v5)
@@ -1638,8 +1637,8 @@ if barstate.isfirst
 
 div_ph = ta.pivothigh((div_source == "Close" ? close : high), div_prd, div_prd)
 div_pl = ta.pivotlow((div_source == "Close" ? close : low), div_prd, div_prd)
-plotshape(div_ph and div_showpivot, text = "H",  style = shape.labeldown, color = color.new(color.white, 100), textcolor = color.red, location = location.abovebar, offset = -div_prd)
-plotshape(div_pl and div_showpivot, text = "L",  style = shape.labelup, color = color.new(color.white, 100), textcolor = color.lime, location = location.belowbar, offset = -div_prd)
+plotshape(use_div and div_ph and div_showpivot, text = "H",  style = shape.labeldown, color = color.new(color.white, 100), textcolor = color.red, location = location.abovebar, offset = -div_prd)
+plotshape(use_div and div_pl and div_showpivot, text = "L",  style = shape.labelup, color = color.new(color.white, 100), textcolor = color.lime, location = location.belowbar, offset = -div_prd)
 
 var int div_maxarraysize = 20
 var div_ph_positions = array.new_int(div_maxarraysize, 0)
@@ -1928,14 +1927,13 @@ ma5 = get_ma(close, ma5_len, ma_type)
 ma6 = get_ma(close, ma6_len, ma_type)
 ma7 = get_ma(close, ma7_len, ma_type)
 
-if use_ma
-    plot(ma_count >= 1 ? ma1 : na, "MA 1", color=ma1_col, linewidth=2)
-    plot(ma_count >= 2 ? ma2 : na, "MA 2", color=ma2_col, linewidth=2)
-    plot(ma_count >= 3 ? ma3 : na, "MA 3", color=ma3_col, linewidth=2)
-    plot(ma_count >= 4 ? ma4 : na, "MA 4", color=ma4_col, linewidth=2)
-    plot(ma_count >= 5 ? ma5 : na, "MA 5", color=ma5_col, linewidth=2)
-    plot(ma_count >= 6 ? ma6 : na, "MA 6", color=ma6_col, linewidth=2)
-    plot(ma_count >= 7 ? ma7 : na, "MA 7", color=ma7_col, linewidth=2)
+plot(use_ma and ma_count >= 1 ? ma1 : na, "MA 1", color=ma1_col, linewidth=2)
+plot(use_ma and ma_count >= 2 ? ma2 : na, "MA 2", color=ma2_col, linewidth=2)
+plot(use_ma and ma_count >= 3 ? ma3 : na, "MA 3", color=ma3_col, linewidth=2)
+plot(use_ma and ma_count >= 4 ? ma4 : na, "MA 4", color=ma4_col, linewidth=2)
+plot(use_ma and ma_count >= 5 ? ma5 : na, "MA 5", color=ma5_col, linewidth=2)
+plot(use_ma and ma_count >= 6 ? ma6 : na, "MA 6", color=ma6_col, linewidth=2)
+plot(use_ma and ma_count >= 7 ? ma7 : na, "MA 7", color=ma7_col, linewidth=2)
 
 //-----------------------------------------------------------------------------
 // SMC / OBD EXECUTION
