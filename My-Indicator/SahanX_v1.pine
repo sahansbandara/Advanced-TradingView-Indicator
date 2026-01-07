@@ -778,7 +778,176 @@ mapping_smc() =>
         project := time
         trend := -1
     if barstate.islast
-        na
+        var line     ln = na
+        var polyline pl = na
+        ln.delete()
+        pl.delete()
+        ln := na
+        pl := na
+        ln := line.new(
+               x1 = sum
+             , x2 = project
+             , y1 = point
+             , y2 = trend == 1 ? up : dn
+             , xloc = xloc.bar_time
+             , color = color.red
+             )
+        pl := polyline.new(
+               charts
+             , line_color = mappingcss
+             , xloc = xloc.bar_time
+             , line_style = mappingStyle.lstyle()
+             )
+    true
+
+dFVG() =>
+    [h2, l2, c1, o1, c, o, h, l, h1, l1, fvatr] = ghl()
+    var FVG[] blFVG = array.new<FVG>()
+    var FVG[] brFVG = array.new<FVG>()
+    bool      upfvg = false
+    bool      dnfvg = false
+    float     blth  = l1 + (fvatr[1] * fvgthresh)
+    float     brth  = h1 - (fvatr[1] * fvgthresh)
+
+    cc    =                        timeframe.change()
+
+    switch
+        what_fvg == "FVG" or what_fvg == "Breakers" =>
+            if l > h2 and cc and c1 > blth
+                upfvg := true
+                
+            if l2 > h and cc and c1 < brth
+                dnfvg := true
+
+
+    if upfvg[1]
+        if blFVG.size() > 0
+            fvg = blFVG.get(0)
+            if fvg.israid == true and fvg.active == false
+                fvg.active  := true
+                fvg.raidloc := na
+                fvg.raidx2  := na
+                fvg.raidy   := na
+                fvg.raidcs  := #ffffff00
+
+        blFVG.unshift(
+             FVG.new(
+                   l   [1]
+                 , h2  [1]
+                 , time[3]
+                 , false
+                 , na
+                  )
+                 )
+
+        
+
+    if dnfvg[1]
+        if brFVG.size() > 0
+            fvg = brFVG.get(0)
+            if fvg.israid == true and fvg.active == false
+                fvg = brFVG.get(0)
+                fvg.active := true
+                fvg.active  := true
+                fvg.raidloc := na
+                fvg.raidx2  := na
+                fvg.raidy   := na
+                fvg.raidcs  := #ffffff00
+
+        brFVG.unshift(
+             FVG.new(
+                   l2  [1]
+                 , h   [1]
+                 , time[3]
+                 , false
+                 , na
+                  )
+                 )
+
+        
+
+    if blFVG.size() > 0
+        for [i, fvg] in blFVG
+            if not fvg.isbb
+                if fvg_src      == "Close" ? math.min(c, o) < fvg.btm : fvg_src == "Wick" ? l < fvg.btm : fvg_src == "Avg" ? l < math.avg(fvg.top, fvg.btm) : na
+                    
+                    fvg.isbb             := true
+                    fvg.bbloc            := time
+                    
+                    if what_fvg == "FVG"
+                        blFVG.remove(i)
+
+            else
+                if (fvg_src == "Close" ? math.max(c, o) > fvg.top : fvg_src == "Wick" ? h > fvg.top : fvg_src == "Avg" ? h > math.avg(fvg.top, fvg.btm) : na) and what_fvg == "Breakers"
+                    blFVG.remove(i)
+                    
+
+    if brFVG.size() > 0
+        for [i, fvg] in brFVG
+            if not fvg.isbb
+                if (fvg_src     == "Close" ? math.max(c, o) > fvg.top : fvg_src == "Wick" ? h > fvg.top : fvg_src == "Avg" ? h > math.avg(fvg.top, fvg.btm) : na)
+                    
+                    fvg.isbb             := true
+                    fvg.bbloc            := time
+                    
+                    if what_fvg == "FVG"
+                        brFVG.remove(i)
+            else
+                if (fvg_src == "Close" ? math.min(c, o) < fvg.btm : fvg_src == "Wick" ? l < fvg.btm : fvg_src == "Avg" ? l < math.avg(fvg.top, fvg.btm) : na) and what_fvg == "Breakers"
+                    brFVG.remove(i)
+                    
+
+    if fvgoverlap
+        overlapFVG(blFVG, brFVG)
+
+
+    if dispraid
+        for [i, fvg] in blFVG
+            if not fvg.israid and not fvg.isbb
+                if low < fvg.top and close > fvg.top
+                    fvg.israid  := true
+                    fvg.raidloc := time
+                    fvg.raidx2  := time
+                    fvg.raidy   := low
+                    fvg.raidcs  := chart.fg_color
+            else
+                if low <= fvg.raidy and fvg.active == false and not fvg.isbb
+                    
+                    fvg.active := true
+                    fvg.raidx2 := time
+                else
+                    if fvg.active == false and not fvg.isbb
+                        fvg.raidx2 := time
+
+        for [i, fvg] in brFVG
+            if not fvg.israid and not fvg.isbb
+                if high > fvg.btm and close < fvg.btm and not fvg.isbb
+                    fvg.israid  := true
+                    fvg.raidloc := time
+                    fvg.raidy   := high
+                    fvg.raidx2  := time
+                    fvg.raidcs  := chart.fg_color
+            else
+                if high >= fvg.raidy and fvg.active == false and not fvg.isbb
+                    
+                    fvg.active := true
+                    fvg.raidx2 := time
+                else
+                    if fvg.active == false and not fvg.isbb
+                        fvg.raidx2 := time
+
+    
+    if barstate.islast
+        if blFVG.size() > 0 and fvg_num > 0
+            for i = 0 to math.min(fvg_num - 1, blFVG.size() - 1)
+                fvg = blFVG.get(i)
+                dispFVG(fvg, i, true)
+
+        if brFVG.size() > 0 and fvg_num > 0
+            for i = 0 to math.min(fvg_num - 1, brFVG.size() - 1)
+                fvg = brFVG.get(i)
+                dispFVG(fvg, i, false)
+
 
 // Porting the structure method/function from Indicator.pine
 structure_func(color upcss, color dncss, bool draw, bool internal, int limit) =>
@@ -1757,8 +1926,7 @@ if windowsis ? (bar_index > last_bar_index - mswindow) : true
 barcolor(candlecss ? bar_css : na)
 
 if fvg_enable
-    // dFVG logic
-    na
+    dFVG()
 
 if showMapping
     mapping_smc()
