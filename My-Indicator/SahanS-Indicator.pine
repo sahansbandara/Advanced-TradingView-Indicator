@@ -1,0 +1,251 @@
+// SahanS Simple Signal Indicator
+// Clean BUY/SELL signals using: Divergence + SMC + Liquidity + Order Blocks
+// Version 2.0.0 - Simplified
+// © SahanS
+
+//@version=5
+indicator("SahanS Signals", "SahanS [2.0]", overlay=true, max_bars_back=500)
+
+//=============================================================================
+// INPUTS (Simplified)
+//=============================================================================
+
+GRP_MAIN = "📊 Signal Settings"
+sensitivity = input.string("Medium", "Signal Strength", options=["Conservative", "Medium", "Aggressive"], 
+     tooltip="Conservative = More confirmations needed (fewer signals)\nAggressive = Fewer confirmations (more signals)", group=GRP_MAIN)
+showBackground = input.bool(true, "Show Trend Background", group=GRP_MAIN)
+showTable = input.bool(true, "Show Info Panel", group=GRP_MAIN)
+
+GRP_STYLE = "🎨 Signal Style"
+buyColor = input.color(#00E676, "Buy Signal Color", group=GRP_STYLE)
+sellColor = input.color(#FF1744, "Sell Signal Color", group=GRP_STYLE)
+signalSize = input.string("Normal", "Signal Size", options=["Tiny", "Small", "Normal", "Large"], group=GRP_STYLE)
+
+GRP_EXTRA = "⚙️ Optional Visuals"
+showMA = input.bool(false, "Show Moving Averages", group=GRP_EXTRA)
+showDivergence = input.bool(false, "Show Divergence Dots", group=GRP_EXTRA)
+showLiquidity = input.bool(false, "Show Liquidity Sweeps", group=GRP_EXTRA)
+
+//=============================================================================
+// CORE CALCULATIONS (All hidden - work behind the scenes)
+//=============================================================================
+
+// Sensitivity settings
+reqConfluence = sensitivity == "Conservative" ? 4 : sensitivity == "Medium" ? 3 : 2
+
+// --- RSI & MACD ---
+rsi = ta.rsi(close, 14)
+[macdLine, signalLine, histLine] = ta.macd(close, 12, 26, 9)
+
+// --- Moving Averages ---
+emaFast = ta.ema(close, 21)
+emaSlow = ta.ema(close, 50)
+ema200 = ta.ema(close, 200)
+
+// --- Pivot Points ---
+pivotLen = 5
+ph = ta.pivothigh(high, pivotLen, pivotLen)
+pl = ta.pivotlow(low, pivotLen, pivotLen)
+
+// --- Divergence Detection ---
+var float lastPL = na, var float lastPL_RSI = na
+var float lastPH = na, var float lastPH_RSI = na
+
+bullDiv = false
+bearDiv = false
+
+if pl
+    if not na(lastPL) and low[pivotLen] < lastPL and rsi[pivotLen] > lastPL_RSI
+        bullDiv := true
+    lastPL := low[pivotLen]
+    lastPL_RSI := rsi[pivotLen]
+
+if ph
+    if not na(lastPH) and high[pivotLen] > lastPH and rsi[pivotLen] < lastPH_RSI
+        bearDiv := true
+    lastPH := high[pivotLen]
+    lastPH_RSI := rsi[pivotLen]
+
+// --- Market Structure (SMC) ---
+var int trend = 0
+var float swingH = na, var float swingL = na
+
+liqPH = ta.pivothigh(14, 14)
+liqPL = ta.pivotlow(14, 14)
+
+if liqPH
+    swingH := high[14]
+if liqPL
+    swingL := low[14]
+
+// Trend detection
+if close > ema200 and emaFast > emaSlow
+    trend := 1
+else if close < ema200 and emaFast < emaSlow
+    trend := -1
+
+// CHoCH detection
+bullChoch = trend[1] == -1 and trend == 1
+bearChoch = trend[1] == 1 and trend == -1
+
+// --- Liquidity Sweep ---
+var float liqHigh = na, var float liqLow = na
+var bool liqHBroken = true, var bool liqLBroken = true
+
+if liqPH
+    liqHigh := high[14]
+    liqHBroken := false
+if liqPL
+    liqLow := low[14]
+    liqLBroken := false
+
+bullLiqSweep = not na(liqLow) and not liqLBroken and low < liqLow and close > liqLow
+bearLiqSweep = not na(liqHigh) and not liqHBroken and high > liqHigh and close < liqHigh
+
+if bullLiqSweep
+    liqLBroken := true
+if bearLiqSweep
+    liqHBroken := true
+
+// --- Order Block Detection ---
+obLen = 5
+obUpper = ta.highest(obLen)
+obLower = ta.lowest(obLen)
+var int obState = 0
+obState := high[obLen] > obUpper ? 0 : low[obLen] < obLower ? 1 : obState[1]
+
+volPivot = ta.pivothigh(volume, obLen, obLen)
+bullOB = volPivot and obState == 1
+bearOB = volPivot and obState == 0
+
+// Store OB levels
+var float bullOBtop = na, var float bullOBbtm = na
+var float bearOBtop = na, var float bearOBbtm = na
+
+if bullOB
+    bullOBtop := hl2[obLen]
+    bullOBbtm := low[obLen]
+if bearOB
+    bearOBtop := high[obLen]
+    bearOBbtm := hl2[obLen]
+
+// OB touch detection
+bullOBtouch = not na(bullOBtop) and low <= bullOBtop and low >= bullOBbtm
+bearOBtouch = not na(bearOBtop) and high >= bearOBbtm and high <= bearOBtop
+
+// --- MA Crossovers ---
+maBullCross = ta.crossover(emaFast, emaSlow)
+maBearCross = ta.crossunder(emaFast, emaSlow)
+
+//=============================================================================
+// CONFLUENCE SCORING
+//=============================================================================
+
+// Bullish Score
+bullScore = 0
+bullScore += bullDiv ? 1 : 0
+bullScore += bullLiqSweep ? 1 : 0
+bullScore += bullChoch ? 1 : 0
+bullScore += bullOBtouch ? 1 : 0
+bullScore += maBullCross ? 1 : 0
+bullScore += (trend == 1 and close > emaFast and rsi < 70) ? 1 : 0
+bullScore += (rsi < 35) ? 1 : 0
+bullScore += (histLine > histLine[1] and histLine[1] > histLine[2]) ? 1 : 0
+
+// Bearish Score
+bearScore = 0
+bearScore += bearDiv ? 1 : 0
+bearScore += bearLiqSweep ? 1 : 0
+bearScore += bearChoch ? 1 : 0
+bearScore += bearOBtouch ? 1 : 0
+bearScore += maBearCross ? 1 : 0
+bearScore += (trend == -1 and close < emaFast and rsi > 30) ? 1 : 0
+bearScore += (rsi > 65) ? 1 : 0
+bearScore += (histLine < histLine[1] and histLine[1] < histLine[2]) ? 1 : 0
+
+//=============================================================================
+// FINAL SIGNALS
+//=============================================================================
+
+buySignal = bullScore >= reqConfluence
+sellSignal = bearScore >= reqConfluence
+
+// Prevent consecutive signals (1 signal per direction until opposite appears)
+var int lastSignal = 0
+filteredBuy = buySignal and lastSignal != 1
+filteredSell = sellSignal and lastSignal != -1
+
+if filteredBuy
+    lastSignal := 1
+if filteredSell
+    lastSignal := -1
+
+//=============================================================================
+// VISUALIZATION (Clean & Simple)
+//=============================================================================
+
+// Signal size
+sigSize = signalSize == "Tiny" ? size.tiny : signalSize == "Small" ? size.small : signalSize == "Large" ? size.large : size.normal
+
+// BUY Signal
+plotshape(filteredBuy, title="BUY", location=location.belowbar, 
+     style=shape.triangleup, size=sigSize, color=buyColor, text="BUY", textcolor=color.white)
+
+// SELL Signal
+plotshape(filteredSell, title="SELL", location=location.abovebar, 
+     style=shape.triangledown, size=sigSize, color=sellColor, text="SELL", textcolor=color.white)
+
+// Trend Background (subtle)
+bgCol = trend == 1 ? color.new(#00E676, 95) : trend == -1 ? color.new(#FF1744, 95) : na
+bgcolor(showBackground ? bgCol : na, title="Trend BG")
+
+// Optional: Moving Averages
+plot(showMA ? emaFast : na, "EMA 21", color=color.new(color.yellow, 0), linewidth=1)
+plot(showMA ? emaSlow : na, "EMA 50", color=color.new(color.blue, 0), linewidth=1)
+plot(showMA ? ema200 : na, "EMA 200", color=color.new(color.white, 50), linewidth=1)
+
+// Optional: Divergence dots
+plotshape(showDivergence and bullDiv, title="Bull Div", location=location.belowbar, 
+     style=shape.circle, size=size.tiny, color=color.lime)
+plotshape(showDivergence and bearDiv, title="Bear Div", location=location.abovebar, 
+     style=shape.circle, size=size.tiny, color=color.red)
+
+// Optional: Liquidity sweep markers
+plotshape(showLiquidity and bullLiqSweep, title="Bull Liq", location=location.belowbar, 
+     style=shape.diamond, size=size.tiny, color=color.teal)
+plotshape(showLiquidity and bearLiqSweep, title="Bear Liq", location=location.abovebar, 
+     style=shape.diamond, size=size.tiny, color=color.orange)
+
+//=============================================================================
+// INFO PANEL (Optional - Clean Design)
+//=============================================================================
+
+var table panel = table.new(position.top_right, 2, 4, 
+     bgcolor=color.new(#1a1a2e, 10), border_color=color.new(color.white, 80), border_width=1)
+
+if barstate.islast and showTable
+    // Header
+    table.cell(panel, 0, 0, "SahanS", text_color=color.white, text_size=size.small)
+    table.cell(panel, 1, 0, "v2.0", text_color=color.gray, text_size=size.tiny)
+    
+    // Trend
+    trendText = trend == 1 ? "▲ BULL" : trend == -1 ? "▼ BEAR" : "─ FLAT"
+    trendCol = trend == 1 ? buyColor : trend == -1 ? sellColor : color.gray
+    table.cell(panel, 0, 1, "Trend", text_color=color.gray, text_size=size.tiny)
+    table.cell(panel, 1, 1, trendText, text_color=trendCol, text_size=size.tiny)
+    
+    // Scores
+    table.cell(panel, 0, 2, "Bull", text_color=color.gray, text_size=size.tiny)
+    table.cell(panel, 1, 2, str.tostring(bullScore) + "/" + str.tostring(reqConfluence), 
+         text_color=bullScore >= reqConfluence ? buyColor : color.white, text_size=size.tiny)
+    
+    table.cell(panel, 0, 3, "Bear", text_color=color.gray, text_size=size.tiny)
+    table.cell(panel, 1, 3, str.tostring(bearScore) + "/" + str.tostring(reqConfluence), 
+         text_color=bearScore >= reqConfluence ? sellColor : color.white, text_size=size.tiny)
+
+//=============================================================================
+// ALERTS
+//=============================================================================
+
+alertcondition(filteredBuy, title="BUY Signal", message="SahanS: BUY Signal Detected!")
+alertcondition(filteredSell, title="SELL Signal", message="SahanS: SELL Signal Detected!")
