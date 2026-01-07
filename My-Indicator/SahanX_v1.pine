@@ -1910,7 +1910,7 @@ plot(ma_count >= 7 ? ma7 : na, "MA 7", color=ma7_col, linewidth=2)
 //-----------------------------------------------------------------------------
 // SMC / OBD EXECUTION
 //-----------------------------------------------------------------------------
-structure structure_ms = na
+var structure structure_ms = na
 if windowsis
     if (bar_index > last_bar_index - mswindow)
         structure_ms := structure_func(swingcssup, swingcssdn, showSwing, false, swingLimit)
@@ -1919,7 +1919,7 @@ if windowsis == false
 
 color bar_css = na
 if windowsis ? (bar_index > last_bar_index - mswindow) : true
-    if not na(structure_ms)
+    if not na(structure_ms) and not na(structure_ms.trend)
         bar_css := structure_ms.trend == 1 ? swingcssup : swingcssdn
         bar_css := (structure_ms.txt == "bos" ? bar_css : color.new(bar_css, 30))
 
