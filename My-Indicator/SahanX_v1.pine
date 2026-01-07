@@ -1643,13 +1643,13 @@ var div_pl_positions = array.new_int(div_maxarraysize, 0)
 var div_ph_vals = array.new_float(div_maxarraysize, 0.)
 var div_pl_vals = array.new_float(div_maxarraysize, 0.)
 
-if div_ph
+if not na(div_ph)
     array.unshift(div_ph_positions, bar_index)
     array.unshift(div_ph_vals, div_ph)
     if array.size(div_ph_positions) > div_maxarraysize
         array.pop(div_ph_positions)
         array.pop(div_ph_vals)
-if div_pl
+if not na(div_pl)
     array.unshift(div_pl_positions, bar_index)
     array.unshift(div_pl_vals, div_pl)
     if array.size(div_pl_positions) > div_maxarraysize
@@ -1806,10 +1806,10 @@ var div_last_pos_div_lines = 0
 var div_last_neg_div_lines = 0
 var div_remove_last_pos_divs = false 
 var div_remove_last_neg_divs = false
-if div_pl
+if not na(div_pl)
     div_remove_last_pos_divs := false
     div_last_pos_div_lines := 0
-if div_ph
+if not na(div_ph)
     div_remove_last_neg_divs := false
     div_last_neg_div_lines := 0
 
