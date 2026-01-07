@@ -20,6 +20,7 @@ OBT = "Display internal buy and sell activity"
 OBD = "Show Last number of orderblock"
 OBMT = "[Length] Use Length to adjust cordinate of the orderblocks\n[Full] Use whole candle body"
 
+use_smc         = input.bool(true, "Market Structure", group=MSG)
 bool windowsis      = input.bool(true, "Window", inline="kla", group=MSG)
 int mswindow        = input.int(3600, "", tooltip=MST,group=MSG, inline="kla", minval=1000)
  
@@ -42,6 +43,7 @@ int mslen           = input.int(5, "", inline="node", group=MSG, minval=2)
 bool buildsweep     = input.bool(true, "Build Sweep (x)", "Build sweep on market structure", "znc", MSG)
 bool msbubble       = input.bool(true, "Bubbles", tooltip="Display Circle Bubbles", inline="bubbles", group=MSG)
 
+use_vob         = input.bool(true, "Volumetric Order Blocks", group=VBG)
 bool obshow         = input.bool(true, "Show Last", tooltip=OBD, group=VBG, inline="obshow")
 int oblast          = input.int(3, "", group=VBG, inline="obshow", minval=0)
 color obupcs       = input.color(color.new(#089981, 90), "", inline="obshow", group=VBG)
@@ -63,14 +65,14 @@ showline     = input.bool(true, "Show Mid-Line", group=VBG)
 overlap_smc  = input.bool(true, "Hide Overlap", group=VBG, inline="ov")
 wichlap      = input.string("Recent", "", options=["Recent", "Old"], inline="ov", group=VBG)
 
-fvg_enable   = input.bool(true, "", inline="1", group="FAIR VALUE GAP", tooltip="Display fair value gap")
+fvg_enable   = input.bool(true, "Fair Value Gap", inline="1", group="FAIR VALUE GAP", tooltip="Display fair value gap")
 what_fvg     = input.string("FVG", "", inline="1", group="FAIR VALUE GAP", tooltip="Display fair value gap", 
  options=["FVG", "Breakers"])
 fvg_num      = input.int(3, "Show Last", inline="1a", group="FAIR VALUE GAP", tooltip="Number of fvg to show", minval=0)
-fvg_upcss    = input.color(color.new(#089981, 80), "", inline="1", group="FAIR VALUE GAP")
-fvg_dncss    = input.color(color.new(#f23645, 80), "", inline="1", group="FAIR VALUE GAP")
-fvgbbup      = input.color(color.new(#089981, 100), "", inline="1", group="FAIR VALUE GAP")
-fvgbbdn      = input.color(color.new(#f23645, 100), "", inline="1", group="FAIR VALUE GAP")
+fvg_upcss    = input.color(color.new(#FFCC00, 75), "", inline="1", group="FAIR VALUE GAP")
+fvg_dncss    = input.color(color.new(#f23645, 75), "", inline="1", group="FAIR VALUE GAP")
+fvgbbup      = input.color(color.new(#00897B, 75), "", inline="1", group="FAIR VALUE GAP")
+fvgbbdn      = input.color(color.new(#9C27B0, 75), "", inline="1", group="FAIR VALUE GAP")
 fvg_src      = input.string("Close", "Mitigation", 
  inline="3", 
  group="FAIR VALUE GAP", 
@@ -87,13 +89,14 @@ dispraid     = input.bool(true, "Display Raids", inline="raid", group="FAIR VALU
 // ORDER BLOCK DETECTOR INPUTS
 //-----------------------------------------------------------------------------
 GRP_OBD = "Order Block Detector"
+use_obd = input.bool(true, "Order Block Detector", group=GRP_OBD)
 obd_length = input.int(5, 'Volume Pivot Length', minval = 1, group=GRP_OBD)
 obd_bull_ext_last = input.int(3, 'Bullish OB ', minval = 1, inline = 'bull', group=GRP_OBD)
-obd_bg_bull_css = input.color(color.new(#169400, 80), '', inline = 'bull', group=GRP_OBD)
+obd_bg_bull_css = input.color(color.new(#B2B5BE, 75), '', inline = 'bull', group=GRP_OBD)
 obd_bull_css = input.color(#169400, '', inline = 'bull', group=GRP_OBD)
 obd_bull_avg_css = input.color(color.new(#9598a1, 37), '', inline = 'bull', group=GRP_OBD)
 obd_bear_ext_last = input.int(3, 'Bearish OB', minval = 1, inline = 'bear', group=GRP_OBD)
-obd_bg_bear_css = input.color(color.new(#ff1100, 80), '', inline = 'bear', group=GRP_OBD)
+obd_bg_bear_css = input.color(color.new(#ff1100, 75), '', inline = 'bear', group=GRP_OBD)
 obd_bear_css = input.color(#ff1100, '', inline = 'bear', group=GRP_OBD)
 obd_bear_avg_css = input.color(color.new(#9598a1, 37), '', inline = 'bear', group=GRP_OBD)
 obd_line_style = input.string('⎯⎯⎯', 'Average Line Style', options = ['⎯⎯⎯', '----', '····'], group=GRP_OBD)
@@ -104,6 +107,7 @@ obd_mitigation = input.string('Close', 'Mitigation Methods', options = ['Wick', 
 // LIQUIDITY SWINGS INPUTS
 //-----------------------------------------------------------------------------
 GRP_LS = "Liquidity Swings"
+use_ls = input.bool(true, "Liquidity Swings", group=GRP_LS)
 ls_length = input.int(14, 'Pivot Lookback', group=GRP_LS)
 ls_area = input.string('Full Range', 'Swing Area', options = ['Wick Extremity', 'Full Range'], group=GRP_LS)
 ls_intraPrecision = input.bool(false, 'Intrabar Precision', inline = 'intrabar', group=GRP_LS)
@@ -122,6 +126,7 @@ ls_labelSize = input.string('Small', 'Labels Size', options = ['Tiny', 'Small', 
 // DIVERGENCE INPUTS
 //-----------------------------------------------------------------------------
 GRP_DIV = "Divergence"
+use_div = input.bool(true, "Divergence", group=GRP_DIV)
 div_prd = input.int(defval = 5, title = "Pivot Period", minval = 1, maxval = 50, group=GRP_DIV)
 div_source = input.string(defval = "Close", title = "Source for Pivot Points", options = ["Close", "High/Low"], group=GRP_DIV)
 div_searchdiv = input.string(defval = "Regular", title = "Divergence Type", options = ["Regular", "Hidden", "Regular/Hidden"], group=GRP_DIV)
@@ -161,6 +166,7 @@ div_hid_div_l_width = input.int(defval = 2, title = "Hidden Divergence Line Widt
 // 7 MOVING AVERAGES INPUTS
 //-----------------------------------------------------------------------------
 GRP_MA = "7 Moving Averages"
+use_ma = input.bool(true, "7 Moving Averages", group=GRP_MA)
 ma_type = input.string("EMA", "MA Type", options=["SMA", "EMA", "WMA", "RMA", "VWMA"], group=GRP_MA)
 ma_count = input.int(5, "MA Count", minval=1, maxval=7, group=GRP_MA)
 ma1_len = input.int(21, "MA 1 Length", group=GRP_MA)
@@ -1340,7 +1346,7 @@ structure_func(color upcss, color dncss, bool draw, bool internal, int limit) =>
                 if brobenter.breaker      == false
                     brobenter.breaker      := true
 
-    if obshow and oblast > 0
+    if use_vob and obshow and oblast > 0
         if barstate.isconfirmed
             blob.mitigated()
             brob.mitigated()
@@ -1397,6 +1403,7 @@ ls_get_counts(condition, top, btm)=>
         count := 0
         vol := 0.
     else
+    if use_ls
         if ls_intraPrecision
             if ls_n > ls_length
                 if array.size(ls_v[ls_length]) > 0
@@ -1461,49 +1468,50 @@ var bool  pl_crossed = na
 var       pl_x1 = 0
 var box   pl_bx = box.new(na,na,na,na, bgcolor = color.new(btmAreaCss, 80), border_color = na)
 
-ls_ph = ta.pivothigh(ls_length, ls_length)
-[ls_ph_count, ls_ph_vol] = ls_get_counts(ls_ph, ph_top, ph_btm)
-if ls_ph and showTop
-    ph_top := high[ls_length]
-    ph_btm := switch ls_area 
-        'Wick Extremity' => math.max(close[ls_length], open[ls_length])
-        'Full Range' => low[ls_length]
-    ph_x1 := ls_n - ls_length
-    ph_crossed := false
-    box.set_lefttop(ph_bx, ph_x1, ph_top)
-    box.set_rightbottom(ph_bx, ph_x1, ph_btm)
-else
-    ph_crossed := close > ph_top ? true : ph_crossed
-    if ph_crossed
-        box.set_right(ph_bx, ph_x1)
+if use_ls
+    ls_ph = ta.pivothigh(ls_length, ls_length)
+    [ls_ph_count, ls_ph_vol] = ls_get_counts(ls_ph, ph_top, ph_btm)
+    if ls_ph and showTop
+        ph_top := high[ls_length]
+        ph_btm := switch ls_area 
+            'Wick Extremity' => math.max(close[ls_length], open[ls_length])
+            'Full Range' => low[ls_length]
+        ph_x1 := ls_n - ls_length
+        ph_crossed := false
+        box.set_lefttop(ph_bx, ph_x1, ph_top)
+        box.set_rightbottom(ph_bx, ph_x1, ph_btm)
     else
-        box.set_right(ph_bx, ls_n+3)
-if showTop
-    ls_set_zone(ls_ph, ph_x1, ph_top, ph_btm, ls_ph_count, ls_ph_vol, topAreaCss)
-    ls_set_level(ls_ph, ph_crossed, ph_top, ls_ph_count, ls_ph_vol, topCss)
-    ls_set_label(ls_ph_count, ls_ph_vol, ph_x1, ph_top, topCss, label.style_label_down)
+        ph_crossed := close > ph_top ? true : ph_crossed
+        if ph_crossed
+            box.set_right(ph_bx, ph_x1)
+        else
+            box.set_right(ph_bx, ls_n+3)
+    if showTop
+        ls_set_zone(ls_ph, ph_x1, ph_top, ph_btm, ls_ph_count, ls_ph_vol, topAreaCss)
+        ls_set_level(ls_ph, ph_crossed, ph_top, ls_ph_count, ls_ph_vol, topCss)
+        ls_set_label(ls_ph_count, ls_ph_vol, ph_x1, ph_top, topCss, label.style_label_down)
 
-ls_pl = ta.pivotlow(ls_length, ls_length)
-[ls_pl_count, ls_pl_vol] = ls_get_counts(ls_pl, pl_top, pl_btm)
-if ls_pl and showBtm
-    pl_top := switch ls_area 
-        'Wick Extremity' => math.min(close[ls_length], open[ls_length])
-        'Full Range' => high[ls_length] 
-    pl_btm := low[ls_length]
-    pl_x1 := ls_n - ls_length
-    pl_crossed := false
-    box.set_lefttop(pl_bx, pl_x1, pl_top)
-    box.set_rightbottom(pl_bx, pl_x1, pl_btm)
-else
-    pl_crossed := close < pl_btm ? true : pl_crossed
-    if pl_crossed
-        box.set_right(pl_bx, pl_x1)
+    ls_pl = ta.pivotlow(ls_length, ls_length)
+    [ls_pl_count, ls_pl_vol] = ls_get_counts(ls_pl, pl_top, pl_btm)
+    if ls_pl and showBtm
+        pl_top := switch ls_area 
+            'Wick Extremity' => math.min(close[ls_length], open[ls_length])
+            'Full Range' => high[ls_length] 
+        pl_btm := low[ls_length]
+        pl_x1 := ls_n - ls_length
+        pl_crossed := false
+        box.set_lefttop(pl_bx, pl_x1, pl_top)
+        box.set_rightbottom(pl_bx, pl_x1, pl_btm)
     else
-        box.set_right(pl_bx, ls_n+3)
-if showBtm
-    ls_set_zone(ls_pl, pl_x1, pl_top, pl_btm, ls_pl_count, ls_pl_vol, btmAreaCss)
-    ls_set_level(ls_pl, pl_crossed, pl_btm, ls_pl_count, ls_pl_vol, btmCss)
-    ls_set_label(ls_pl_count, ls_pl_vol, pl_x1, pl_btm, btmCss, label.style_label_up)
+        pl_crossed := close < pl_btm ? true : pl_crossed
+        if pl_crossed
+            box.set_right(pl_bx, pl_x1)
+        else
+            box.set_right(pl_bx, ls_n+3)
+    if showBtm
+        ls_set_zone(ls_pl, pl_x1, pl_top, pl_btm, ls_pl_count, ls_pl_vol, btmAreaCss)
+        ls_set_level(ls_pl, pl_crossed, pl_btm, ls_pl_count, ls_pl_vol, btmCss)
+        ls_set_label(ls_pl_count, ls_pl_vol, pl_x1, pl_btm, btmCss, label.style_label_up)
 
 //-----------------------------------------------------------------------------
 // ORDER BLOCK DETECTOR LOGIC
@@ -1568,17 +1576,27 @@ if obd_mitigation == 'Close'
 else
     obd_target_bull := obd_lower
     obd_target_bear := obd_upper
-obd_os := high[obd_length] > obd_upper ? 0 : low[obd_length] < obd_lower ? 1 : obd_os[1]
-obd_phv = ta.pivothigh(volume, obd_length, obd_length)
-[obd_bull_top, obd_bull_btm, obd_bull_avg, obd_bull_left, obd_bull_ob] = obd_get_coordinates(obd_phv and obd_os == 1, hl2[obd_length], low[obd_length], low[obd_length])
-[obd_bear_top, obd_bear_btm, obd_bear_avg, obd_bear_left, obd_bear_ob] = obd_get_coordinates(obd_phv and obd_os == 0, high[obd_length], hl2[obd_length], high[obd_length])
-obd_mitigated_bull = obd_remove_mitigated(obd_bull_top, obd_bull_btm, obd_bull_left, obd_bull_avg, obd_target_bull, true)
-obd_mitigated_bear = obd_remove_mitigated(obd_bear_top, obd_bear_btm, obd_bear_left, obd_bear_avg, obd_target_bear, false)
-obd_set_order_blocks(obd_bull_top, obd_bull_btm, obd_bull_left, obd_bull_avg, obd_bull_ext_last, obd_bg_bull_css, obd_bull_css, obd_bull_avg_css)
-obd_set_order_blocks(obd_bear_top, obd_bear_btm, obd_bear_left, obd_bear_avg, obd_bear_ext_last, obd_bg_bear_css, obd_bear_css, obd_bear_avg_css)
-        
-plot(obd_bull_ob, 'Bull OB', obd_bull_css, 2, plot.style_linebr, offset = -obd_length, display = display.none)
-plot(obd_bear_ob, 'Bear OB', obd_bear_css, 2, plot.style_linebr, offset = -obd_length, display = display.none)
+// OBD Alert Variables
+bool obd_bull_ob = false
+bool obd_bear_ob = false
+bool obd_mitigated_bull = false
+bool obd_mitigated_bear = false
+
+if use_obd
+    obd_os := high[obd_length] > obd_upper ? 0 : low[obd_length] < obd_lower ? 1 : obd_os[1]
+    obd_phv = ta.pivothigh(volume, obd_length, obd_length)
+    [obd_bull_top, obd_bull_btm, obd_bull_avg, obd_bull_left, obd_bull_ob_val] = obd_get_coordinates(obd_phv and obd_os == 1, hl2[obd_length], low[obd_length], low[obd_length])
+    [obd_bear_top, obd_bear_btm, obd_bear_avg, obd_bear_left, obd_bear_ob_val] = obd_get_coordinates(obd_phv and obd_os == 0, high[obd_length], hl2[obd_length], high[obd_length])
+    obd_mitigated_bull := obd_remove_mitigated(obd_bull_top, obd_bull_btm, obd_bull_left, obd_bull_avg, obd_target_bull, true)
+    obd_mitigated_bear := obd_remove_mitigated(obd_bear_top, obd_bear_btm, obd_bear_left, obd_bear_avg, obd_target_bear, false)
+    obd_set_order_blocks(obd_bull_top, obd_bull_btm, obd_bull_left, obd_bull_avg, obd_bull_ext_last, obd_bg_bull_css, obd_bull_css, obd_bull_avg_css)
+    obd_set_order_blocks(obd_bear_top, obd_bear_btm, obd_bear_left, obd_bear_avg, obd_bear_ext_last, obd_bg_bear_css, obd_bear_css, obd_bear_avg_css)
+    
+    obd_bull_ob := obd_bull_ob_val
+    obd_bear_ob := obd_bear_ob_val
+            
+    plot(obd_bull_ob ? 1 : na, 'Bull OB', obd_bull_css, 2, plot.style_linebr, offset = -obd_length, display = display.none)
+    plot(obd_bear_ob ? 1 : na, 'Bear OB', obd_bear_css, 2, plot.style_linebr, offset = -obd_length, display = display.none)
 
 //-----------------------------------------------------------------------------
 // DIVERGENCE LOGIC (Upgraded to v5)
@@ -1719,17 +1737,18 @@ div_calccmf_check = div_calccmf
 div_calcmfi_check = div_calcmfi
 div_calcext_check = div_calcext
 
-div_array_set_divs(div_calculate_divs(div_calcmacd_check, div_macd), 0)
-div_array_set_divs(div_calculate_divs(div_calcmacda_check, div_deltamacd), 1)
-div_array_set_divs(div_calculate_divs(div_calcrsi_check, div_rsi), 2)
-div_array_set_divs(div_calculate_divs(div_calcstoc_check, div_stk), 3)
-div_array_set_divs(div_calculate_divs(div_calccci_check, div_cci), 4)
-div_array_set_divs(div_calculate_divs(div_calcmom_check, div_moment), 5)
-div_array_set_divs(div_calculate_divs(div_calcobv_check, div_Obv), 6)
-div_array_set_divs(div_calculate_divs(div_calcvwmacd_check, div_vwmacd), 7)
-div_array_set_divs(div_calculate_divs(div_calccmf_check, div_cmf), 8)
-div_array_set_divs(div_calculate_divs(div_calcmfi_check, div_Mfi), 9)
-div_array_set_divs(div_calculate_divs(div_calcext_check, div_externalindi), 10)
+if use_div
+    div_array_set_divs(div_calculate_divs(div_calcmacd_check, div_macd), 0)
+    div_array_set_divs(div_calculate_divs(div_calcmacda_check, div_deltamacd), 1)
+    div_array_set_divs(div_calculate_divs(div_calcrsi_check, div_rsi), 2)
+    div_array_set_divs(div_calculate_divs(div_calcstoc_check, div_stk), 3)
+    div_array_set_divs(div_calculate_divs(div_calccci_check, div_cci), 4)
+    div_array_set_divs(div_calculate_divs(div_calcmom_check, div_moment), 5)
+    div_array_set_divs(div_calculate_divs(div_calcobv_check, div_Obv), 6)
+    div_array_set_divs(div_calculate_divs(div_calcvwmacd_check, div_vwmacd), 7)
+    div_array_set_divs(div_calculate_divs(div_calccmf_check, div_cmf), 8)
+    div_array_set_divs(div_calculate_divs(div_calcmfi_check, div_Mfi), 9)
+    div_array_set_divs(div_calculate_divs(div_calcext_check, div_externalindi), 10)
 
 div_total_div = 0
 for x = 0 to array.size(div_all_divergences) - 1
@@ -1809,65 +1828,66 @@ div_old_pos_divs_can_be_removed = true
 div_old_neg_divs_can_be_removed = true
 div_startpoint = div_dontconfirm ? 0 : 1
 
-for x = 0 to 10
-    div_type = -1
-    for y = 0 to 3
-        if array.get(div_all_divergences, x * 4 + y) > 0
-            div_type := y
-            if (y % 2) == 1 
-                div_dnumdiv_top := div_dnumdiv_top + 1
-                div_top_label_col := array.get(div_colors, y)
-            if (y % 2) == 0
-                div_dnumdiv_bottom := div_dnumdiv_bottom + 1
-                div_bottom_label_col := array.get(div_colors, y)
-            if not array.includes(div_distances, array.get(div_all_divergences, x * 4 + y))
-                array.push(div_distances, array.get(div_all_divergences, x * 4 + y))
-                div_new_line = div_showlines ? line.new(x1 = bar_index - array.get(div_all_divergences, x * 4 + y), 
-                          y1 = (div_source == "Close" ? close[array.get(div_all_divergences, x * 4 + y)] : 
-                                           (y % 2) == 0 ? low[array.get(div_all_divergences, x * 4 + y)] : 
-                                                           high[array.get(div_all_divergences, x * 4 + y)]),
-                          x2 = bar_index - div_startpoint,
-                          y2 = (div_source == "Close" ? close[div_startpoint] : 
-                                           (y % 2) == 0 ? low[div_startpoint] : 
-                                                           high[div_startpoint]),
-                          color = array.get(div_colors, y),
-                          style = y < 2 ? div_reg_div_l_style_val : div_hid_div_l_style_val,
-                          width = y < 2 ? div_reg_div_l_width : div_hid_div_l_width
-                          )
-                          : na
+if use_div
+    for x = 0 to 10
+        div_type = -1
+        for y = 0 to 3
+            if array.get(div_all_divergences, x * 4 + y) > 0
+                div_type := y
+                if (y % 2) == 1 
+                    div_dnumdiv_top := div_dnumdiv_top + 1
+                    div_top_label_col := array.get(div_colors, y)
                 if (y % 2) == 0
-                    if div_old_pos_divs_can_be_removed
-                        div_old_pos_divs_can_be_removed := false
-                        if not div_showlast and div_remove_last_pos_divs
-                            div_delete_last_pos_div_lines_label(div_last_pos_div_lines)
-                            div_last_pos_div_lines := 0
-                        if div_showlast
-                            div_delete_old_pos_div_lines()
-                    array.push(div_pos_div_lines, div_new_line)
-                    div_last_pos_div_lines := div_last_pos_div_lines + 1
-                    div_remove_last_pos_divs := true
-                if (y % 2) == 1
-                    if div_old_neg_divs_can_be_removed
-                        div_old_neg_divs_can_be_removed := false
-                        if not div_showlast and div_remove_last_neg_divs
-                            div_delete_last_neg_div_lines_label(div_last_neg_div_lines)
-                            div_last_neg_div_lines := 0
-                        if div_showlast
-                            div_delete_old_neg_div_lines()
-                    array.push(div_neg_div_lines, div_new_line)
-                    div_last_neg_div_lines := div_last_neg_div_lines + 1
-                    div_remove_last_neg_divs := true
-            if y == 0
-                div_pos_reg_div_detected := true
-            if y == 1
-                div_neg_reg_div_detected := true
-            if y == 2
-                div_pos_hid_div_detected := true
-            if y == 3
-                div_neg_hid_div_detected := true
-    if div_type >= 0
-        div_divergence_text_top    := div_divergence_text_top    + ((div_type % 2) == 1 ? (div_showindis != "Don't Show" ? array.get(div_indicators_name, x) + "\n" : "") : "")
-        div_divergence_text_bottom := div_divergence_text_bottom + ((div_type % 2) == 0 ? (div_showindis != "Don't Show" ? array.get(div_indicators_name, x) + "\n" : "") : "")
+                    div_dnumdiv_bottom := div_dnumdiv_bottom + 1
+                    div_bottom_label_col := array.get(div_colors, y)
+                if not array.includes(div_distances, array.get(div_all_divergences, x * 4 + y))
+                    array.push(div_distances, array.get(div_all_divergences, x * 4 + y))
+                    div_new_line = div_showlines ? line.new(x1 = bar_index - array.get(div_all_divergences, x * 4 + y), 
+                              y1 = (div_source == "Close" ? close[array.get(div_all_divergences, x * 4 + y)] : 
+                                               (y % 2) == 0 ? low[array.get(div_all_divergences, x * 4 + y)] : 
+                                                               high[array.get(div_all_divergences, x * 4 + y)]),
+                              x2 = bar_index - div_startpoint,
+                              y2 = (div_source == "Close" ? close[div_startpoint] : 
+                                               (y % 2) == 0 ? low[div_startpoint] : 
+                                                               high[div_startpoint]),
+                              color = array.get(div_colors, y),
+                              style = y < 2 ? div_reg_div_l_style_val : div_hid_div_l_style_val,
+                              width = y < 2 ? div_reg_div_l_width : div_hid_div_l_width
+                              )
+                              : na
+                    if (y % 2) == 0
+                        if div_old_pos_divs_can_be_removed
+                            div_old_pos_divs_can_be_removed := false
+                            if not div_showlast and div_remove_last_pos_divs
+                                div_delete_last_pos_div_lines_label(div_last_pos_div_lines)
+                                div_last_pos_div_lines := 0
+                            if div_showlast
+                                div_delete_old_pos_div_lines()
+                        array.push(div_pos_div_lines, div_new_line)
+                        div_last_pos_div_lines := div_last_pos_div_lines + 1
+                        div_remove_last_pos_divs := true
+                    if (y % 2) == 1
+                        if div_old_neg_divs_can_be_removed
+                            div_old_neg_divs_can_be_removed := false
+                            if not div_showlast and div_remove_last_neg_divs
+                                div_delete_last_neg_div_lines_label(div_last_neg_div_lines)
+                                div_last_neg_div_lines := 0
+                            if div_showlast
+                                div_delete_old_neg_div_lines()
+                        array.push(div_neg_div_lines, div_new_line)
+                        div_last_neg_div_lines := div_last_neg_div_lines + 1
+                        div_remove_last_neg_divs := true
+                if y == 0
+                    div_pos_reg_div_detected := true
+                if y == 1
+                    div_neg_reg_div_detected := true
+                if y == 2
+                    div_pos_hid_div_detected := true
+                if y == 3
+                    div_neg_hid_div_detected := true
+        if div_type >= 0
+            div_divergence_text_top    := div_divergence_text_top    + ((div_type % 2) == 1 ? (div_showindis != "Don't Show" ? array.get(div_indicators_name, x) + "\n" : "") : "")
+            div_divergence_text_bottom := div_divergence_text_bottom + ((div_type % 2) == 0 ? (div_showindis != "Don't Show" ? array.get(div_indicators_name, x) + "\n" : "") : "")
 
 if div_showindis != "Don't Show" or div_shownum
     if div_shownum and div_dnumdiv_top > 0
@@ -1908,13 +1928,14 @@ ma5 = get_ma(close, ma5_len, ma_type)
 ma6 = get_ma(close, ma6_len, ma_type)
 ma7 = get_ma(close, ma7_len, ma_type)
 
-plot(ma_count >= 1 ? ma1 : na, "MA 1", color=ma1_col, linewidth=2)
-plot(ma_count >= 2 ? ma2 : na, "MA 2", color=ma2_col, linewidth=2)
-plot(ma_count >= 3 ? ma3 : na, "MA 3", color=ma3_col, linewidth=2)
-plot(ma_count >= 4 ? ma4 : na, "MA 4", color=ma4_col, linewidth=2)
-plot(ma_count >= 5 ? ma5 : na, "MA 5", color=ma5_col, linewidth=2)
-plot(ma_count >= 6 ? ma6 : na, "MA 6", color=ma6_col, linewidth=2)
-plot(ma_count >= 7 ? ma7 : na, "MA 7", color=ma7_col, linewidth=2)
+if use_ma
+    plot(ma_count >= 1 ? ma1 : na, "MA 1", color=ma1_col, linewidth=2)
+    plot(ma_count >= 2 ? ma2 : na, "MA 2", color=ma2_col, linewidth=2)
+    plot(ma_count >= 3 ? ma3 : na, "MA 3", color=ma3_col, linewidth=2)
+    plot(ma_count >= 4 ? ma4 : na, "MA 4", color=ma4_col, linewidth=2)
+    plot(ma_count >= 5 ? ma5 : na, "MA 5", color=ma5_col, linewidth=2)
+    plot(ma_count >= 6 ? ma6 : na, "MA 6", color=ma6_col, linewidth=2)
+    plot(ma_count >= 7 ? ma7 : na, "MA 7", color=ma7_col, linewidth=2)
 
 //-----------------------------------------------------------------------------
 // SMC / OBD EXECUTION
@@ -1922,10 +1943,10 @@ plot(ma_count >= 7 ? ma7 : na, "MA 7", color=ma7_col, linewidth=2)
 //-----------------------------------------------------------------------------
 // SMC / OBD EXECUTION
 //-----------------------------------------------------------------------------
-structure structure_ms = structure_func(swingcssup, swingcssdn, showSwing, false, swingLimit)
+structure structure_ms = use_smc ? structure_func(swingcssup, swingcssdn, showSwing, false, swingLimit) : structure(na)
 
 color bar_css = na
-if windowsis ? (bar_index > last_bar_index - mswindow) : true
+if (windowsis ? (bar_index > last_bar_index - mswindow) : true) and use_smc
     if not na(structure_ms) and not na(structure_ms.trend)
         bar_css := structure_ms.trend == 1 ? swingcssup : swingcssdn
         bar_css := (structure_ms.txt == "bos" ? bar_css : color.new(bar_css, 30))
@@ -1935,7 +1956,7 @@ barcolor(candlecss ? bar_css : na)
 if fvg_enable
     dFVG()
 
-if showMapping
+if showMapping and use_smc
     mapping_smc()
 
 //-----------------------------------------------------------------------------
