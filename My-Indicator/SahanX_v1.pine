@@ -21,10 +21,10 @@ OBD = "Show Last number of orderblock"
 OBMT = "[Length] Use Length to adjust cordinate of the orderblocks\n[Full] Use whole candle body"
 
 bool windowsis      = input.bool(true, "Window", inline="kla", group=MSG)
-int mswindow        = input.int(5000, "", tooltip=MST,group=MSG, inline="kla", minval=1000)
+int mswindow        = input.int(3600, "", tooltip=MST,group=MSG, inline="kla", minval=1000)
  
 bool showSwing      = input.bool(true, "Swing", inline="scss", group=MSG)
-int swingLimit      = input.int(100, "", tooltip=SLT, inline="scss", group=MSG, minval=10, maxval=200)
+int swingLimit      = input.int(60, "", tooltip=SLT, inline="scss", group=MSG, minval=10, maxval=200)
  
 color swingcssup    = input.color(#089981, "", inline="scss", group=MSG)
 color swingcssdn    = input.color(#f23645, "", inline="scss", group=MSG)
@@ -43,7 +43,7 @@ bool buildsweep     = input.bool(true, "Build Sweep (x)", "Build sweep on market
 bool msbubble       = input.bool(true, "Bubbles", tooltip="Display Circle Bubbles", inline="bubbles", group=MSG)
 
 bool obshow         = input.bool(true, "Show Last", tooltip=OBD, group=VBG, inline="obshow")
-int oblast          = input.int(5, "", group=VBG, inline="obshow", minval=0)
+int oblast          = input.int(3, "", group=VBG, inline="obshow", minval=0)
 color obupcs       = input.color(color.new(#089981, 90), "", inline="obshow", group=VBG)
 color obdncs       = input.color(color.new(#f23645, 90), "", inline="obshow", group=VBG)
 bool obshowactivity = input.bool(true, "Show Buy/Sell Activity", inline="act", group=VBG, tooltip=OBT)
@@ -53,7 +53,7 @@ obshowbb     = input.bool(false, "Show Breakers", inline="bb", group=VBG, toolti
 color bbup         = input.color(color.new(#089981, 100), "", inline="bb", group=VBG)
 color bbdn         = input.color(color.new(#f23645, 100), "", inline="bb", group=VBG)
 obmode       = input.string("Length", "Construction", options=["Length", "Full"], tooltip=OBMT, inline="atr", group=VBG)
-len          = input.int(5, "", inline="atr", group=VBG, minval=1)
+len          = input.int(3, "", inline="atr", group=VBG, minval=1)
 obmiti       = input.string("Close", "Mitigation Method", options=["Close", "Wick", "Avg"], 
  tooltip="Mitigation method for when to trigger order blocks", group=VBG)
 obtxt        = input.string("Normal", "Metric Size", options=["Tiny", "Small", "Normal", "Large", "Huge", "Auto"], 
@@ -63,10 +63,10 @@ showline     = input.bool(true, "Show Mid-Line", group=VBG)
 overlap_smc  = input.bool(true, "Hide Overlap", group=VBG, inline="ov")
 wichlap      = input.string("Recent", "", options=["Recent", "Old"], inline="ov", group=VBG)
 
-fvg_enable   = input.bool(false, "", inline="1", group="FAIR VALUE GAP", tooltip="Display fair value gap")
+fvg_enable   = input.bool(true, "", inline="1", group="FAIR VALUE GAP", tooltip="Display fair value gap")
 what_fvg     = input.string("FVG", "", inline="1", group="FAIR VALUE GAP", tooltip="Display fair value gap", 
  options=["FVG", "Breakers"])
-fvg_num      = input.int(5, "Show Last", inline="1a", group="FAIR VALUE GAP", tooltip="Number of fvg to show", minval=0)
+fvg_num      = input.int(3, "Show Last", inline="1a", group="FAIR VALUE GAP", tooltip="Number of fvg to show", minval=0)
 fvg_upcss    = input.color(color.new(#089981, 80), "", inline="1", group="FAIR VALUE GAP")
 fvg_dncss    = input.color(color.new(#f23645, 80), "", inline="1", group="FAIR VALUE GAP")
 fvgbbup      = input.color(color.new(#089981, 100), "", inline="1", group="FAIR VALUE GAP")
@@ -76,12 +76,12 @@ fvg_src      = input.string("Close", "Mitigation",
  group="FAIR VALUE GAP", 
  tooltip="[Close] Use the close of the body as trigger\n\n[Wick] Use the extreme point of the body as trigger", 
  options=["Close", "Wick", "Avg"])
-fvgthresh    = input.float(0, "Threshold", tooltip="Filter out non significative FVG", group="FAIR VALUE GAP", 
+fvgthresh    = input.float(0.2, "Threshold", tooltip="Filter out non significative FVG", group="FAIR VALUE GAP", 
  inline="asd", minval=0, maxval=2, step=0.1)
 fvgoverlap   = input.bool(true, "Hide Overlap", "Hide overlapping FVG", group="FAIR VALUE GAP")
 fvgline      = input.bool(true, "Show Mid-Line", group="FAIR VALUE GAP")
 fvgextend    = input.bool(false, "Extend FVG", group="FAIR VALUE GAP")
-dispraid     = input.bool(false, "Display Raids", inline="raid", group="FAIR VALUE GAP")
+dispraid     = input.bool(true, "Display Raids", inline="raid", group="FAIR VALUE GAP")
 
 //-----------------------------------------------------------------------------
 // ORDER BLOCK DETECTOR INPUTS
@@ -97,15 +97,15 @@ obd_bg_bear_css = input.color(color.new(#ff1100, 80), '', inline = 'bear', group
 obd_bear_css = input.color(#ff1100, '', inline = 'bear', group=GRP_OBD)
 obd_bear_avg_css = input.color(color.new(#9598a1, 37), '', inline = 'bear', group=GRP_OBD)
 obd_line_style = input.string('⎯⎯⎯', 'Average Line Style', options = ['⎯⎯⎯', '----', '····'], group=GRP_OBD)
-obd_line_width = input.int(1, 'Average Line Width', minval = 1, group=GRP_OBD)
-obd_mitigation = input.string('Wick', 'Mitigation Methods', options = ['Wick', 'Close'], group=GRP_OBD)
+obd_line_width = input.int(3, 'Average Line Width', minval = 1, group=GRP_OBD)
+obd_mitigation = input.string('Close', 'Mitigation Methods', options = ['Wick', 'Close'], group=GRP_OBD)
 
 //-----------------------------------------------------------------------------
 // LIQUIDITY SWINGS INPUTS
 //-----------------------------------------------------------------------------
 GRP_LS = "Liquidity Swings"
 ls_length = input.int(14, 'Pivot Lookback', group=GRP_LS)
-ls_area = input.string('Wick Extremity', 'Swing Area', options = ['Wick Extremity', 'Full Range'], group=GRP_LS)
+ls_area = input.string('Full Range', 'Swing Area', options = ['Wick Extremity', 'Full Range'], group=GRP_LS)
 ls_intraPrecision = input.bool(false, 'Intrabar Precision', inline = 'intrabar', group=GRP_LS)
 ls_intrabarTf = input.timeframe('1', ''              , inline = 'intrabar', group=GRP_LS)
 ls_filterOptions = input.string('Count', 'Filter Areas By', options = ['Count', 'Volume'], inline = 'filter', group=GRP_LS)
@@ -116,7 +116,7 @@ topAreaCss   = input.color(color.new(color.red, 50), 'Area', inline = 'top', gro
 showBtm      = input.bool(true, 'Swing Low'                , inline = 'btm', group = GRP_LS)
 btmCss       = input.color(color.teal, ''                   , inline = 'btm', group = GRP_LS)
 btmAreaCss   = input.color(color.new(color.teal, 50), 'Area', inline = 'btm', group = GRP_LS)
-ls_labelSize = input.string('Tiny', 'Labels Size', options = ['Tiny', 'Small', 'Normal'], group = GRP_LS)
+ls_labelSize = input.string('Small', 'Labels Size', options = ['Tiny', 'Small', 'Normal'], group = GRP_LS)
 
 //-----------------------------------------------------------------------------
 // DIVERGENCE INPUTS
@@ -125,54 +125,54 @@ GRP_DIV = "Divergence"
 div_prd = input.int(defval = 5, title = "Pivot Period", minval = 1, maxval = 50, group=GRP_DIV)
 div_source = input.string(defval = "Close", title = "Source for Pivot Points", options = ["Close", "High/Low"], group=GRP_DIV)
 div_searchdiv = input.string(defval = "Regular", title = "Divergence Type", options = ["Regular", "Hidden", "Regular/Hidden"], group=GRP_DIV)
-div_showindis = input.string(defval = "Full", title = "Show Indicator Names", options = ["Full", "First Letter", "Don't Show"], group=GRP_DIV)
-div_showlimit = input.int(1, title="Minimum Number of Divergence", minval = 1, maxval = 11, group=GRP_DIV)
-div_maxpp = input.int(defval = 10, title = "Maximum Pivot Points to Check", minval = 1, maxval = 20, group=GRP_DIV)
-div_maxbars = input.int(defval = 100, title = "Maximum Bars to Check", minval = 30, maxval = 200, group=GRP_DIV)
+div_showindis = input.string(defval = "First Letter", title = "Show Indicator Names", options = ["Full", "First Letter", "Don't Show"], group=GRP_DIV)
+div_showlimit = input.int(3, title="Minimum Number of Divergence", minval = 1, maxval = 11, group=GRP_DIV)
+div_maxpp = input.int(defval = 3, title = "Maximum Pivot Points to Check", minval = 1, maxval = 20, group=GRP_DIV)
+div_maxbars = input.int(defval = 60, title = "Maximum Bars to Check", minval = 30, maxval = 200, group=GRP_DIV)
 div_shownum = input.bool(defval = true, title = "Show Divergence Number", group=GRP_DIV)
 div_showlast = input.bool(defval = false, title = "Show Only Last Divergence", group=GRP_DIV)
 div_dontconfirm = input.bool(defval = false, title = "Don't Wait for Confirmation", group=GRP_DIV)
 div_showlines = input.bool(defval = true, title = "Show Divergence Lines", group=GRP_DIV)
 div_showpivot = input.bool(defval = false, title = "Show Pivot Points", group=GRP_DIV)
 div_calcmacd = input.bool(defval = true, title = "MACD", group=GRP_DIV)
-div_calcmacda = input.bool(defval = true, title = "MACD Histogram", group=GRP_DIV)
+div_calcmacda = input.bool(defval = false, title = "MACD Histogram", group=GRP_DIV)
 div_calcrsi = input.bool(defval = true, title = "RSI", group=GRP_DIV)
 div_calcstoc = input.bool(defval = true, title = "Stochastic", group=GRP_DIV)
-div_calccci = input.bool(defval = true, title = "CCI", group=GRP_DIV)
-div_calcmom = input.bool(defval = true, title = "Momentum", group=GRP_DIV)
-div_calcobv = input.bool(defval = true, title = "OBV", group=GRP_DIV)
-div_calcvwmacd = input.bool(true, title = "VWmacd", group=GRP_DIV)
-div_calccmf = input.bool(true, title = "Chaikin Money Flow", group=GRP_DIV)
-div_calcmfi = input.bool(true, title = "Money Flow Index", group=GRP_DIV)
+div_calccci = input.bool(defval = false, title = "CCI", group=GRP_DIV)
+div_calcmom = input.bool(defval = false, title = "Momentum", group=GRP_DIV)
+div_calcobv = input.bool(defval = false, title = "OBV", group=GRP_DIV)
+div_calcvwmacd = input.bool(false, title = "VWmacd", group=GRP_DIV)
+div_calccmf = input.bool(false, title = "Chaikin Money Flow", group=GRP_DIV)
+div_calcmfi = input.bool(false, title = "Money Flow Index", group=GRP_DIV)
 div_calcext = input.bool(false, title = "Check External Indicator", group=GRP_DIV)
 div_externalindi = input.source(defval = close, title = "External Indicator", group=GRP_DIV)
-pos_reg_div_col = input.color(defval = color.yellow, title = "Positive Regular Divergence", group=GRP_DIV)
-neg_reg_div_col = input.color(defval = color.navy, title = "Negative Regular Divergence", group=GRP_DIV)
-pos_hid_div_col = input.color(defval = color.lime, title = "Positive Hidden Divergence", group=GRP_DIV)
+pos_reg_div_col = input.color(defval = color.green, title = "Positive Regular Divergence", group=GRP_DIV)
+neg_reg_div_col = input.color(defval = color.red, title = "Negative Regular Divergence", group=GRP_DIV)
+pos_hid_div_col = input.color(defval = color.green, title = "Positive Hidden Divergence", group=GRP_DIV)
 neg_hid_div_col = input.color(defval = color.red, title = "Negative Hidden Divergence", group=GRP_DIV)
-pos_div_text_col = input.color(defval = color.black, title = "Positive Divergence Text Color", group=GRP_DIV)
+pos_div_text_col = input.color(defval = color.white, title = "Positive Divergence Text Color", group=GRP_DIV)
 neg_div_text_col = input.color(defval = color.white, title = "Negative Divergence Text Color", group=GRP_DIV)
 div_reg_div_l_style = input.string(defval = "Solid", title = "Regular Divergence Line Style", options = ["Solid", "Dashed", "Dotted"], group=GRP_DIV)
 div_hid_div_l_style = input.string(defval = "Dashed", title = "Hdden Divergence Line Style", options = ["Solid", "Dashed", "Dotted"], group=GRP_DIV)
 div_reg_div_l_width = input.int(defval = 2, title = "Regular Divergence Line Width", minval = 1, maxval = 5, group=GRP_DIV)
-div_hid_div_l_width = input.int(defval = 1, title = "Hidden Divergence Line Width", minval = 1, maxval = 5, group=GRP_DIV)
+div_hid_div_l_width = input.int(defval = 2, title = "Hidden Divergence Line Width", minval = 1, maxval = 5, group=GRP_DIV)
 
 //-----------------------------------------------------------------------------
 // 7 MOVING AVERAGES INPUTS
 //-----------------------------------------------------------------------------
 GRP_MA = "7 Moving Averages"
-ma_type = input.string("SMA", "MA Type", options=["SMA", "EMA", "WMA", "RMA", "VWMA"], group=GRP_MA)
-ma_count = input.int(1, "MA Count", minval=1, maxval=7, group=GRP_MA)
-ma1_len = input.int(20, "MA 1 Length", group=GRP_MA)
-ma1_col = input.color(color.yellow, "MA 1 Color", group=GRP_MA)
+ma_type = input.string("EMA", "MA Type", options=["SMA", "EMA", "WMA", "RMA", "VWMA"], group=GRP_MA)
+ma_count = input.int(5, "MA Count", minval=1, maxval=7, group=GRP_MA)
+ma1_len = input.int(21, "MA 1 Length", group=GRP_MA)
+ma1_col = input.color(color.blue, "MA 1 Color", group=GRP_MA)
 ma2_len = input.int(50, "MA 2 Length", group=GRP_MA)
-ma2_col = input.color(color.blue, "MA 2 Color", group=GRP_MA)
-ma3_len = input.int(100, "MA 3 Length", group=GRP_MA)
-ma3_col = input.color(color.red, "MA 3 Color", group=GRP_MA)
+ma2_col = input.color(color.green, "MA 2 Color", group=GRP_MA)
+ma3_len = input.int(99, "MA 3 Length", group=GRP_MA)
+ma3_col = input.color(color.yellow, "MA 3 Color", group=GRP_MA)
 ma4_len = input.int(200, "MA 4 Length", group=GRP_MA)
-ma4_col = input.color(color.white, "MA 4 Color", group=GRP_MA)
-ma5_len = input.int(21, "MA 5 Length", group=GRP_MA)
-ma5_col = input.color(color.green, "MA 5 Color", group=GRP_MA)
+ma4_col = input.color(color.red, "MA 4 Color", group=GRP_MA)
+ma5_len = input.int(7, "MA 5 Length", group=GRP_MA)
+ma5_col = input.color(color.purple, "MA 5 Color", group=GRP_MA)
 ma6_len = input.int(9, "MA 6 Length", group=GRP_MA)
 ma6_col = input.color(color.purple, "MA 6 Color", group=GRP_MA)
 ma7_len = input.int(13, "MA 7 Length", group=GRP_MA)
