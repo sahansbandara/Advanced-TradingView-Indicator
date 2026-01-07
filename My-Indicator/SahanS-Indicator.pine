@@ -184,16 +184,25 @@ if filteredSell
 // VISUALIZATION (Clean & Simple)
 //=============================================================================
 
-// Signal size
-sigSize = signalSize == "Tiny" ? size.tiny : signalSize == "Small" ? size.small : signalSize == "Large" ? size.large : size.normal
+// BUY Signals (Separate calls for each size to use constants)
+plotshape(filteredBuy and signalSize == "Tiny", title="BUY - Tiny", location=location.belowbar, 
+     style=shape.triangleup, size=size.tiny, color=buyColor, text="BUY", textcolor=color.white)
+plotshape(filteredBuy and signalSize == "Small", title="BUY - Small", location=location.belowbar, 
+     style=shape.triangleup, size=size.small, color=buyColor, text="BUY", textcolor=color.white)
+plotshape(filteredBuy and signalSize == "Normal", title="BUY - Normal", location=location.belowbar, 
+     style=shape.triangleup, size=size.normal, color=buyColor, text="BUY", textcolor=color.white)
+plotshape(filteredBuy and signalSize == "Large", title="BUY - Large", location=location.belowbar, 
+     style=shape.triangleup, size=size.large, color=buyColor, text="BUY", textcolor=color.white)
 
-// BUY Signal
-plotshape(filteredBuy, title="BUY", location=location.belowbar, 
-     style=shape.triangleup, size=sigSize, color=buyColor, text="BUY", textcolor=color.white)
-
-// SELL Signal
-plotshape(filteredSell, title="SELL", location=location.abovebar, 
-     style=shape.triangledown, size=sigSize, color=sellColor, text="SELL", textcolor=color.white)
+// SELL Signals (Separate calls for each size to use constants)
+plotshape(filteredSell and signalSize == "Tiny", title="SELL - Tiny", location=location.abovebar, 
+     style=shape.triangledown, size=size.tiny, color=sellColor, text="SELL", textcolor=color.white)
+plotshape(filteredSell and signalSize == "Small", title="SELL - Small", location=location.abovebar, 
+     style=shape.triangledown, size=size.small, color=sellColor, text="SELL", textcolor=color.white)
+plotshape(filteredSell and signalSize == "Normal", title="SELL - Normal", location=location.abovebar, 
+     style=shape.triangledown, size=size.normal, color=sellColor, text="SELL", textcolor=color.white)
+plotshape(filteredSell and signalSize == "Large", title="SELL - Large", location=location.abovebar, 
+     style=shape.triangledown, size=size.large, color=sellColor, text="SELL", textcolor=color.white)
 
 // Trend Background (subtle)
 bgCol = trend == 1 ? color.new(#00E676, 95) : trend == -1 ? color.new(#FF1744, 95) : na
