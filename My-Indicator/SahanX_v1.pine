@@ -711,18 +711,8 @@ method display_smc(ob id, ob[] full, int i) =>
                                  (full.get(y).vol / tV) * 100)
                          )
                         ids = full.get(y)
-                        bin.lb.unshift(label.new(
-                                bar_index - 1
-                              , ids.avg
-                              , textcolor = color.new(ids.css, 0)
-                              , style     = label.style_label_left
-                              , size      = obtxt.txSz()
-                              , color     = #ffffff00
-                              , text      = 
-                                  str.tostring(
-                                      math.round(full.get(y).vol, 3), format = format.volume) + " (" + str.tostring(dV.get(y)) + "%)"
-                                   )
-                                  )
+                        vol_text = str.tostring(math.round(full.get(y).vol, 3), format = format.volume) + " (" + str.tostring(dV.get(y)) + "%)"
+                        bin.lb.unshift(label.new(bar_index - 1, ids.avg, textcolor = color.new(ids.css, 0), style = label.style_label_left, size = obtxt.txSz(), color = #ffffff00, text = vol_text))
 
 method dispFVG(FVG fvg, int i, bool bull) =>
     ext = fvgextend ? extend.right : extend.none
