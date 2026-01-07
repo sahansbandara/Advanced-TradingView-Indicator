@@ -1,5 +1,5 @@
 //@version=5
-indicator("SahanX v1", "SahanX v1 [1.0.0]", 
+indicator("SahanX v1", "SahanX v1", 
      overlay = true, 
      max_bars_back = 5000, 
      max_boxes_count = 500, 
@@ -858,7 +858,7 @@ dFVG() =>
         if brFVG.size() > 0
             fvg = brFVG.get(0)
             if fvg.israid == true and fvg.active == false
-                fvg = brFVG.get(0)
+                curr_fvg = brFVG.get(0)
                 fvg.active := true
                 fvg.active  := true
                 fvg.raidloc := na
@@ -952,13 +952,13 @@ dFVG() =>
     if barstate.islast
         if blFVG.size() > 0 and fvg_num > 0
             for i = 0 to math.min(fvg_num - 1, blFVG.size() - 1)
-                fvg = blFVG.get(i)
-                dispFVG(fvg, i, true)
+                curr_fvg = blFVG.get(i)
+                dispFVG(curr_fvg, i, true)
 
         if brFVG.size() > 0 and fvg_num > 0
             for i = 0 to math.min(fvg_num - 1, brFVG.size() - 1)
-                fvg = brFVG.get(i)
-                dispFVG(fvg, i, false)
+                curr_fvg = brFVG.get(i)
+                dispFVG(curr_fvg, i, false)
 
 
 // Porting the structure method/function from Indicator.pine
