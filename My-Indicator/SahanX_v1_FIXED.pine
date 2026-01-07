@@ -69,10 +69,10 @@ fvg_enable   = input.bool(true, "Fair Value Gap", inline="1", group="FAIR VALUE 
 what_fvg     = input.string("FVG", "", inline="1", group="FAIR VALUE GAP", tooltip="Display fair value gap", 
  options=["FVG", "Breakers"])
 fvg_num      = input.int(3, "Show Last", inline="1a", group="FAIR VALUE GAP", tooltip="Number of fvg to show", minval=0)
-fvg_upcss    = input.color(color.new(#FFCC00, 75), "", inline="1", group="FAIR VALUE GAP")
-fvg_dncss    = input.color(color.new(#f23645, 75), "", inline="1", group="FAIR VALUE GAP")
-fvgbbup      = input.color(color.new(#00897B, 75), "", inline="1", group="FAIR VALUE GAP")
-fvgbbdn      = input.color(color.new(#9C27B0, 75), "", inline="1", group="FAIR VALUE GAP")
+fvg_upcss    = input.color(color.new(color.yellow, 75), "", inline="1", group="FAIR VALUE GAP")
+fvg_dncss    = input.color(color.new(color.red, 75), "", inline="1", group="FAIR VALUE GAP")
+fvgbbup      = input.color(color.new(color.teal, 75), "", inline="1", group="FAIR VALUE GAP")
+fvgbbdn      = input.color(color.new(color.purple, 75), "", inline="1", group="FAIR VALUE GAP")
 fvg_src      = input.string("Close", "Mitigation", 
  inline="3", 
  group="FAIR VALUE GAP", 
@@ -92,12 +92,12 @@ GRP_OBD = "Order Block Detector"
 use_obd = input.bool(true, "Order Block Detector", group=GRP_OBD)
 obd_length = input.int(5, 'Volume Pivot Length', minval = 1, group=GRP_OBD)
 obd_bull_ext_last = input.int(3, 'Bullish OB ', minval = 1, inline = 'bull', group=GRP_OBD)
-obd_bg_bull_css = input.color(color.new(#B2B5BE, 75), '', inline = 'bull', group=GRP_OBD)
+obd_bg_bull_css = input.color(color.new(color.gray, 75), '', inline = 'bull', group=GRP_OBD)
 obd_bull_css = input.color(#169400, '', inline = 'bull', group=GRP_OBD)
 obd_bull_avg_css = input.color(color.new(#9598a1, 37), '', inline = 'bull', group=GRP_OBD)
 obd_bear_ext_last = input.int(3, 'Bearish OB', minval = 1, inline = 'bear', group=GRP_OBD)
-obd_bg_bear_css = input.color(color.new(#ff1100, 75), '', inline = 'bear', group=GRP_OBD)
-obd_bear_css = input.color(#ff1100, '', inline = 'bear', group=GRP_OBD)
+obd_bg_bear_css = input.color(color.new(#5b9cf6, 75), '', inline = 'bear', group=GRP_OBD)
+obd_bear_css = input.color(#2962ff, '', inline = 'bear', group=GRP_OBD)
 obd_bear_avg_css = input.color(color.new(#9598a1, 37), '', inline = 'bear', group=GRP_OBD)
 obd_line_style = input.string('⎯⎯⎯', 'Average Line Style', options = ['⎯⎯⎯', '----', '····'], group=GRP_OBD)
 obd_line_width = input.int(3, 'Average Line Width', minval = 1, group=GRP_OBD)
