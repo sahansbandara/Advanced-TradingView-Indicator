@@ -187,9 +187,6 @@ ma7_col = input.color(color.orange, "MA 7 Color", group=GRP_MA)
 //-----------------------------------------------------------------------------
 // TYPES & SETUP
 //-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-// TYPES & SETUP
-//-----------------------------------------------------------------------------
 type hqlzone
     box   pbx
     box   ebx
@@ -995,11 +992,11 @@ structure_func(color upcss, color dncss, bool draw, bool internal, int limit) =>
         blob.clear()
         brob.clear()
 
-    if ph
+    if not na(ph)
         phn.unshift(bar_index[mslen])
         php.unshift(high[mslen])
 
-    if pl
+    if not na(pl)
         pln.unshift(bar_index[mslen])
         plp.unshift(low[mslen])
 
@@ -1938,10 +1935,7 @@ plot(use_ma and ma_count >= 7 ? ma7 : na, "MA 7", color=ma7_col, linewidth=2)
 //-----------------------------------------------------------------------------
 // SMC / OBD EXECUTION
 //-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-// SMC / OBD EXECUTION
-//-----------------------------------------------------------------------------
-structure structure_ms = use_smc ? structure_func(swingcssup, swingcssdn, showSwing, false, swingLimit) : structure(na)
+structure structure_ms = use_smc ? structure_func(swingcssup, swingcssdn, showSwing, false, swingLimit) : structure.new()
 
 color bar_css = na
 if (windowsis ? (bar_index > last_bar_index - mswindow) : true) and use_smc
