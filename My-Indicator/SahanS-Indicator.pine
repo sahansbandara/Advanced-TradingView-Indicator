@@ -143,11 +143,13 @@ var box[] bearOBs = array.new_box()
 
 if ph_s and obshow
     array.push(bearOBs, box.new(bar_index-mslen, high[mslen], bar_index, low[mslen], bgcolor=obdncs, border_color=na))
-    if array.size(bearOBs) > oblast then box.delete(array.shift(bearOBs))
+    if array.size(bearOBs) > oblast
+        box.delete(array.shift(bearOBs))
 
 if pl_s and obshow
     array.push(bullOBs, box.new(bar_index-mslen, high[mslen], bar_index, low[mslen], bgcolor=obupcs, border_color=na))
-    if array.size(bullOBs) > oblast then box.delete(array.shift(bullOBs))
+    if array.size(bullOBs) > oblast
+        box.delete(array.shift(bullOBs))
 
 // Background
 bgcolor(trend == 1 ? color.new(swingcssup, 95) : trend == -1 ? color.new(swingcssdn, 95) : na)
